@@ -3,12 +3,17 @@ package com.bla.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonPointer;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -44,7 +49,8 @@ class CollectionServiceTest {
 
   @BeforeEach
   void setup() {
-    environmentVariables.set("collections", "collection_1,collection_2");
+    environmentVariables.set("COLLECTIONS", "collection_1,collection_2");
+    environmentVariables.set("OPENSEA_COLLECTION_URL", "https://opensea/");
   }
 
   @Test
@@ -76,7 +82,8 @@ class CollectionServiceTest {
     when(okHttpClient.newCall(any())).thenReturn(call);
     when(call.execute()).thenReturn(mockedResponse);
     when(objectMapper.readTree(anyString())).thenReturn(jsonNode);
-    when(jsonNode.at(anyString())).thenReturn(innerJsonNode);
+    when(jsonNode.at("/stats/floor_price")).thenReturn(innerJsonNode); //TODO fix https://www.baeldung.com/powermock-private-method
+    when(jsonNode.at("/stats/one_day_change")).thenReturn(innerJsonNode);
     when(innerJsonNode.asDouble()).thenReturn(0.1);
 
     final var collections = collectionService.getCollectionsOfInterest();

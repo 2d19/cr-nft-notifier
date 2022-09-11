@@ -24,7 +24,7 @@ class MessageServiceTest {
     final var collectionsOfInterest = List.of(collectionOfInterest_1, collectionOfInterest_2);
     final var outcome = messageService.generateMessage(collectionsOfInterest);
     assertEquals(
-        "%3Cb%3ECollections+of+interest%3C%2Fb%3E%3A+%0A1.+test1%2C+%3Ci%3Efloor%3C%2Fi%3E+%3D+2.0%2C+%3Ci%3Echange%3C%2Fi%3E+%3D+1.0+%0A2.+test2%2C+%3Ci%3Efloor%3C%2Fi%3E+%3D+3.0%2C+%3Ci%3Echange%3C%2Fi%3E+%3D+2.0+%0A%0AData+gathered+from+%3Ca+href%3D%22https%3A%2F%2Fopensea.io%2F%22%3Eopensea%3C%2Fa%3E",
+        "%3Cb%3ECollections+of+interest%3C%2Fb%3E%3A+%0A1.+%3Ca+href%3D%22https%3A%2F%2Fopensea.io%2Fcollection%2Ftest1%22%3Etest1%3C%2Fa%3E%2C+%3Ci%3Efloor%3C%2Fi%3E+%3D+2.0%2C+%3Ci%3Echange%3C%2Fi%3E+%3D+1.0+%0A2.+%3Ca+href%3D%22https%3A%2F%2Fopensea.io%2Fcollection%2Ftest2%22%3Etest2%3C%2Fa%3E%2C+%3Ci%3Efloor%3C%2Fi%3E+%3D+3.0%2C+%3Ci%3Echange%3C%2Fi%3E+%3D+2.0+%0A%0AData+gathered+from+%3Ca+href%3D%22https%3A%2F%2Fopensea.io%2F%22%3Eopensea%3C%2Fa%3E",
         outcome);
   }
 }

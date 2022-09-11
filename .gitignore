@@ -1,6 +1,9 @@
 # added
 target
 .idea
+.aws-sam
+samconfig.toml
+env
 
 # Compiled class file
 *.class

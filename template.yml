@@ -1,0 +1,28 @@
+# Used for local running of lambda in localstack container. Use SAM (local) cli to start / invoke the lambda.
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  CrNftNotifierLambda
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+
+Resources:
+  NftNotifierFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Handler: com.bla.handlers.CronHandler::handleRequest
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1 # More info about tiered compilation https://aws.amazon.com/blogs/compute/optimizing-aws-lambda-function-performance-for-java/
+          LAMBDA_JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5050
+          LAMBDA_DOCKER_FLAGS: -p 127.0.0.1:5050:5050
+          TG_URL: "https://api.telegram.org/bot1:example/"
+          TG_CHAT_ID: 123
+          COLLECTIONS: collection_1,collection_2

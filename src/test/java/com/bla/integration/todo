@@ -1,3 +1,0 @@
-trigger lambda localstack
-mock opensea response
-check telegram output

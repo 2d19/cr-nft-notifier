@@ -21,7 +21,11 @@ public class MessageService {
       stringBuilder
           .append(i + 1)
           .append(". ")
+          .append("<a href=\"https://opensea.io/collection/")
           .append(collectionsOfInterest.get(i).getName())
+          .append("\">")
+          .append(collectionsOfInterest.get(i).getName())
+          .append("</a>")
           .append(", <i>floor</i> = ")
           .append(collectionsOfInterest.get(i).getFloorPrice())
           .append(", <i>change</i> = ")

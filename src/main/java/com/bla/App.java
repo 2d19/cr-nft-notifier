@@ -6,7 +6,7 @@ import com.bla.services.TelegramService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 
-/** Used for running locally only. todo: SAM, localstack, lambda local integration test */
+/** Used for running locally only. */
 public class App {
   private final CollectionService collectionService;
   private final TelegramService telegramService;

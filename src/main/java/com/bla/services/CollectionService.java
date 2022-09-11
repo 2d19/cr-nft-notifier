@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -18,7 +17,7 @@ import okhttp3.Response;
  * Call opensea and retrieve collection data based on input. Used in flow: cron -> lambda -> opensea
  * -> telegram. {@link TelegramService}
  *
- * <p>todo: api-key opensea. Change env list of collections to collection call based on address.
+ * <p>
  */
 public class CollectionService {
 
@@ -31,27 +30,28 @@ public class CollectionService {
   }
 
   public List<CollectionOfInterest> getCollectionsOfInterest() {
-    final var collections = System.getenv("collections").split(",");
+
+    final var collections = System.getenv("COLLECTIONS").split(",");
     final var collectionsOfInterest = new ArrayList<CollectionOfInterest>();
 
-    Arrays.stream(collections)
-        .forEach(
-            collection -> {
-              processCollection(collectionsOfInterest, collection);
-            });
+    for (int index = 0; index < collections.length; index++) {
+      processCollection(collectionsOfInterest, collections[index]);
+      if (index % 4 == 0) {
+        waitAMoment();
+      }
+    }
     return collectionsOfInterest;
   }
 
   private void processCollection(
       final ArrayList<CollectionOfInterest> collectionsOfInterest, final String collection) {
 
-    final var url = "https://api.opensea.io/api/v1/collection/" + collection + "/stats";
-    System.out.println("Checking collection: " + collection);
+    final var url = System.getenv("OPENSEA_COLLECTION_URL") + collection + "/stats";
+    System.out.println("Checking collection: " + url);
     final var request = new Request.Builder().url(url).get().build();
 
     try (final var response = okHttpClient.newCall(request).execute()) {
       handleResponse(collection, collectionsOfInterest, response);
-      waitAMoment();
     } catch (IOException ioException) {
       throw new RuntimeException("Processing failed for collection: " + collection, ioException);
     }
@@ -88,7 +88,7 @@ public class CollectionService {
   }
 
   private boolean isCollectionOfInterest(final double floorPrice, final double oneDayChange) {
-    return floorPrice >= 0.01 && oneDayChange > 0.25;
+    return floorPrice >= 0.02 && oneDayChange > 0.25;
   }
 
   private void waitAMoment() {
