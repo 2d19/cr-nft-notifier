@@ -1,0 +1,17 @@
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Root>
+        <Logger name="software.amazon.awssdk" level="INFO"/>
+        <!-- enable lines below for detailed message logging -->
+        <Logger name="org.apache.http.wire" level="DEBUG"/>
+        <Logger name="com.amazonaws.request" level="DEBUG"/>
+    </Loggers>
+</Configuration>

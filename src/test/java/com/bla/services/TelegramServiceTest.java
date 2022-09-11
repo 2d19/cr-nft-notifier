@@ -62,7 +62,7 @@ class TelegramServiceTest {
         requestCaptorValue
             .url()
             .toString()
-            .contains("sendmessage")); // Request works with either sendMessage or sendmessage.
+            .contains("sendmessage")); // Request works with either sendMessage.json or sendmessage.
   }
 
   @Test
