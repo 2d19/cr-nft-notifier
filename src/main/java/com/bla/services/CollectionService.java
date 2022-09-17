@@ -88,7 +88,8 @@ public class CollectionService {
   }
 
   private boolean isCollectionOfInterest(final double floorPrice, final double oneDayChange) {
-    return floorPrice >= 0.02 && oneDayChange > 0.25;
+    return floorPrice >= Double.parseDouble(System.getenv("MINIMUM_FLOOR_PRICE"))
+        && oneDayChange > 0.25;
   }
 
   private void waitAMoment() {

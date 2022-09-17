@@ -3,17 +3,12 @@ package com.bla.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonPointer;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -27,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
@@ -42,8 +38,6 @@ class CollectionServiceTest {
 
   @Mock private JsonNode jsonNode;
 
-  @Mock private JsonNode innerJsonNode;
-
   @Mock private Call call;
   @SystemStub private EnvironmentVariables environmentVariables;
 
@@ -51,6 +45,7 @@ class CollectionServiceTest {
   void setup() {
     environmentVariables.set("COLLECTIONS", "collection_1,collection_2");
     environmentVariables.set("OPENSEA_COLLECTION_URL", "https://opensea/");
+    environmentVariables.set("MINIMUM_FLOOR_PRICE", "0.01");
   }
 
   @Test
@@ -82,9 +77,8 @@ class CollectionServiceTest {
     when(okHttpClient.newCall(any())).thenReturn(call);
     when(call.execute()).thenReturn(mockedResponse);
     when(objectMapper.readTree(anyString())).thenReturn(jsonNode);
-    when(jsonNode.at("/stats/floor_price")).thenReturn(innerJsonNode); //TODO fix https://www.baeldung.com/powermock-private-method
-    when(jsonNode.at("/stats/one_day_change")).thenReturn(innerJsonNode);
-    when(innerJsonNode.asDouble()).thenReturn(0.1);
+    when(jsonNode.at(anyString())).thenReturn(jsonNode);
+    Mockito.when(jsonNode.asDouble()).thenReturn(0.01);
 
     final var collections = collectionService.getCollectionsOfInterest();
     assertTrue(collections.isEmpty());
@@ -101,19 +95,19 @@ class CollectionServiceTest {
             .message("testMessage")
             .body(ResponseBody.create(MediaType.get("application/json; charset=utf-8"), "{}"))
             .build();
-    when(okHttpClient.newCall(any())).thenReturn(call);
-    when(call.execute()).thenReturn(mockedResponse);
-    when(objectMapper.readTree(anyString())).thenReturn(jsonNode);
-    when(jsonNode.at(anyString())).thenReturn(innerJsonNode);
     /*
     For the first collection, simulate a move in floorPrice + oneDayChange.
     The second collection should not be selected as a collection of interest.
     */
-    when(innerJsonNode.asDouble())
-        .thenReturn(99.0)
+    when(okHttpClient.newCall(any())).thenReturn(call);
+    when(call.execute()).thenReturn(mockedResponse);
+    when(objectMapper.readTree(anyString())).thenReturn(jsonNode);
+    when(jsonNode.at(anyString())).thenReturn(jsonNode);
+    Mockito.when(jsonNode.asDouble())
         .thenReturn(99.0) // first collection
-        .thenReturn(0.1)
-        .thenReturn(0.1); // second collection
+        .thenReturn(99.0)
+        .thenReturn(0.01) // second collection
+        .thenReturn(0.01);
 
     final var collections = collectionService.getCollectionsOfInterest();
     assertEquals(1, collections.size());
