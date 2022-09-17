@@ -6,7 +6,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-class CronHandlerTest {
+class CronHandlerTest { // todo wip
 
   private final CronHandler cronHandler = new CronHandler();
   @Mock private Context context;

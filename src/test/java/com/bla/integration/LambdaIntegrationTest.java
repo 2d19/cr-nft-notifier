@@ -90,6 +90,7 @@ public class LambdaIntegrationTest {
             + mockServerContainer.getServerPort()
             + "/telegram/\","
             + "TG_CHAT_ID=\"tg_mocked_chat_id\","
+            + "MINIMUM_FLOOR_PRICE=\"0.01\","
             + "COLLECTIONS=\"collection_1,collection_2\"}");
     localStackContainer.execInContainer(
         "awslocal", "lambda", "invoke", "--function-name", "crNftNotifier", "output0.json");
